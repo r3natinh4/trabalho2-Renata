@@ -28,7 +28,7 @@ public class Cadastro {
         System.out.println("Nome: " + nome);
         System.out.println("numero: " + numero);
         System.out.println("data de nascimento: " + data de nascimento);
-        System.out.println("cep: " + ce);
+        System.out.println("cep: " + cep);
     }
 
     public static void main(String[] args) {
