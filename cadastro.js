@@ -15,13 +15,13 @@ public class Cadastro {
         nome = scanner.nextLine();
 
         System.out.print("Digite seu numero: ");
-        email = scanner.nextLine();
+        numero = scanner.nextLine();
 
         System.out.print("Digite sua data de nascimento: ");
-        senha = scanner.nextLine();
+        data de nascimento = scanner.nextLine();
 
         System.out.print("Digite seu cep: ");
-        cpf = scanner.nextLine();
+        cep = scanner.nextLine();
 
         System.out.println("Cadastro realizado com sucesso!");
         System.out.println("Dados cadastrados:");
