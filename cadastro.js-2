@@ -1,0 +1,73 @@
+// Classe Cliente
+class Cliente {
+    constructor(nome, telefone, datadenascimento, cep) {
+      this.nome = nome;
+      this.telefone = telefone;
+      this.datadenascimento = datadenascimento;
+      this.cep = cep;
+    }
+  }
+  
+  // Classe CadastroClientes
+  class CadastroClientes {
+    constructor() {
+      this.clientes = [];
+    }
+  
+    cadastrarCliente(nome, telefone, datadenascimento, cep) {
+      const cliente = new Cliente(nome, telefone, datadenascimento, cep);
+      this.clientes.push(cliente);
+      console.log("Cliente cadastrado com sucesso!");
+    }
+  
+    listarClientes() {
+      console.log("Clientes cadastrados:");
+      this.clientes.forEach(cliente => {
+        console.log(`Nome: ${cliente.nome}`);
+        console.log(`Telefone: ${cliente.telefone}`);
+        console.log(`DataDeNascimento: ${cliente.datadenascimento}`);
+        console.log(`Cep: ${cliente.cep}`);
+        console.log();
+      });
+    }
+  }
+  
+  // Criar um objeto CadastroClientes
+  const cadastro = new CadastroClientes();
+  
+  // Função para cadastrar um cliente
+  function cadastrarCliente() {
+    const nome = prompt("Nome:");
+    const datadenascimento = prompt("Telefone:");
+    const telefone = prompt("DataDeNascimento:");
+    const cep = prompt("Cep:");
+    cadastro.cadastrarCliente(nome, telefone, datadenascimento, cep);
+  }
+  
+  // Função para listar os clientes
+  function listarClientes() {
+    cadastro.listarClientes();
+  }
+  
+  // Menu de opções
+  while (true) {
+    console.log("1. Cadastrar cliente");
+    console.log("2. Listar clientes");
+    console.log("3. Sair");
+  
+    const opcao = prompt("Opção:");
+  
+    switch (opcao) {
+      case "1":
+        cadastrarCliente();
+        break;
+      case "2":
+        listarClientes();
+        break;
+      case "3":
+        console.log("Saindo...");
+        return;
+      default:
+        console.log("Opção inválida.");
+    }
+  }
