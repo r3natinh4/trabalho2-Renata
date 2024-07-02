@@ -1,3 +1,8 @@
+
+CODIGO ERRADO
+
+
+
 import java.util.Scanner;
 
 public class Cadastro {
