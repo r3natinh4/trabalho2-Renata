@@ -1,4 +1,5 @@
 import os
+import sys
 from account import Account
 from catalog import print_products, add_to_cart, remove_from_cart, show_cart, pay_products, view_history
 
@@ -17,11 +18,21 @@ def main():
         with open('db/accounts.json', 'a') as file:
             file.write('[]')
     
+    print('Menu de Opções:')
+    
     while True:
-        choice: str = input('Você deseja se registrar ou logar? [r/l]: ').strip().lower()
-        if choice not in ['r', 'l']:
+        print('\n1. Login\n' \
+                '2. Registro\n' \
+                '3. Sair\n')
+        
+        choice: str = input('O que você deseja fazer? ').strip()
+        if choice not in ['1', '2', '3']:
             print('Escolha inválida.')
             continue
+        
+        if choice == '3':
+            print('Até logo!')
+            sys.exit()
         
         try:
             name: str         = valid_input('Digite seu nome: ')
@@ -33,10 +44,10 @@ def main():
             continue
         
         match choice:
-            case 'r':
-                account: Account = Account.register(name, phone_number, date_birth, cep, password)
-            case 'l':
+            case '1':
                 account: Account = Account.login(name, phone_number, date_birth, cep, password)
+            case '2':
+                account: Account = Account.register(name, phone_number, date_birth, cep, password)
         
         if account is None:
             print('Alguma coisa deu errado, tente novamente.')
@@ -56,7 +67,6 @@ def main():
                 '7. Sair\n')
         
         choice: str = input('O que você deseja fazer? ').strip()
-        
         match choice:
             case '1':
                 print('Catálogo de Frutas:\n')

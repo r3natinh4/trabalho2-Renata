@@ -16,11 +16,11 @@ class Account:
         with open('db/accounts.json', 'r') as file:
             data: list[dict[str, str]] = json.load(file)
             data_input: dict[str, str] = {
-                'name'         : name,
-                'phone_number' : phone_number,
-                'date_birth'   : date_birth,
-                'cep'          : cep,
-                'password'     : password
+                'name'         : name.lower(),
+                'phone_number' : phone_number.lower(),
+                'date_birth'   : date_birth.lower(),
+                'cep'          : cep.lower(),
+                'password'     : password.lower()
             }
         
         if data_input in data:
@@ -36,11 +36,11 @@ class Account:
         with open('db/accounts.json', 'r') as file:
             data: list[dict[str, str]] = json.load(file)
             data_input: dict[str, str] = {
-                'name'         : name,
-                'phone_number' : phone_number,
-                'date_birth'   : date_birth,
-                'cep'          : cep,
-                'password'     : password
+                'name'         : name.lower(),
+                'phone_number' : phone_number.lower(),
+                'date_birth'   : date_birth.lower(),
+                'cep'          : cep.lower(),
+                'password'     : password.lower()
             }
         
         if data_input not in data:
