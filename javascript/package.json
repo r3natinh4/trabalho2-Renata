@@ -1,0 +1,19 @@
+{
+  "name": "trabalho2-renata",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r3natinh4/trabalho2-Renata.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/r3natinh4/trabalho2-Renata/issues"
+  },
+  "homepage": "https://github.com/r3natinh4/trabalho2-Renata#readme",
+  "description": ""
+}

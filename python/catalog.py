@@ -26,14 +26,11 @@ products: list[dict[str, str | float]] = [
         'name'        : 'Uva',
         'price'       : 2.9,
         'description' : 'Tompson/niagara'
-    },
+    }
 ]
 
 cart: list[dict[str, str | float]] = []
 history: list[dict[str, str | float]] = []
-
-def _get_product_data(index: int):
-    return products[index]
 
 def print_products() -> None:
     for index, product in enumerate(products):
@@ -74,10 +71,9 @@ def pay_products() -> None:
     for product in cart:
         price: float = product['price']
         total += price
-    
-    for i in cart:
-        history.append(i)
-        del i
+        
+        history.append(product)
+        del product
     
     print('Compra feita com sucesso!\n' \
          f'Foi pago um total de R$ {total:.2f}')

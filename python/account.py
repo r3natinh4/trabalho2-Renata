@@ -1,13 +1,11 @@
-from os import path
-from typing import Self, Literal
+from typing import Self
 import json
-import re
 
 class Account:
     def __init__(self, name: str, phone_number: str, date_birth: str, cep: str, password: str) -> None:
-        self.name         = name
+        self.name         = name.lower()
         self.phone_number = phone_number
-        self.date_birth   = date_birth
+        self.date_birth   = date_birth.lower()
         self.cep          = cep
         self.password     = password
     
@@ -17,14 +15,14 @@ class Account:
             data: list[dict[str, str]] = json.load(file)
             data_input: dict[str, str] = {
                 'name'         : name.lower(),
-                'phone_number' : phone_number.lower(),
+                'phone_number' : phone_number,
                 'date_birth'   : date_birth.lower(),
-                'cep'          : cep.lower(),
-                'password'     : password.lower()
+                'cep'          : cep,
+                'password'     : password
             }
         
         if data_input in data:
-            raise None
+            return None
         
         with open('db/accounts.json', 'w') as file:
             data.append(data_input)
@@ -37,10 +35,10 @@ class Account:
             data: list[dict[str, str]] = json.load(file)
             data_input: dict[str, str] = {
                 'name'         : name.lower(),
-                'phone_number' : phone_number.lower(),
+                'phone_number' : phone_number,
                 'date_birth'   : date_birth.lower(),
-                'cep'          : cep.lower(),
-                'password'     : password.lower()
+                'cep'          : cep,
+                'password'     : password
             }
         
         if data_input not in data:
