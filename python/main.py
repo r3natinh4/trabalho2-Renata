@@ -53,7 +53,7 @@ def main():
                 '4. Mostrar carrinho\n'         \
                 '5. Pagar produtos\n'           \
                 '6. Ver histórico de compras\n' \
-                '6. Sair\n')
+                '7. Sair\n')
         
         choice: str = input('O que você deseja fazer? ').strip()
         
