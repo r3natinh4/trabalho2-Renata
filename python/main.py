@@ -71,6 +71,8 @@ def main():
                     print('O produto foi adicionado com sucesso ao carrinho.')
                 except IndexError:
                     print('Houve um erro ao adicionar o produto ao carrinho. O produto existe?')
+                except ValueError:
+                    print('O código do produto não é um número inteiro.')
             case '3':
                 try:
                     index: int = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
@@ -78,6 +80,8 @@ def main():
                     print('O produto foi removido com sucesso do carrinho.')
                 except IndexError:
                     print('Houve um erro ao remover o produto do carrinho.')
+                except ValueError:
+                    print('O código do produto não é um número inteiro.')
             case '4':
                 print('Seu Carrinho:\n')
                 catalog.show_cart()
