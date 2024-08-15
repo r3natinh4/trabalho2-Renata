@@ -91,9 +91,6 @@ def print_products() -> None:
 def add_to_cart(index: int) -> None:
     cart.append(products[index])
 
-def remove_from_cart(index: int) -> None:
-    del cart[index]
-
 def show_cart() -> None:
     if len(cart) == 0:
         print('O carrinho está vazio.')
@@ -116,12 +113,12 @@ def pay_products() -> None:
         return
     
     total: float = .0
-    for product in cart:
+    for index, product in enumerate(cart):
         price: float = product['price']
         total += price
         
         history.append(product)
-        del product
+        del cart[index]  # "del product" não estava funcionando
     
     print('Compra feita com sucesso!\n' \
          f'Foi pago um total de R$ {total:.2f}')
@@ -216,7 +213,7 @@ def main():
             case '3':
                 try:
                     index: int = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
-                    remove_from_cart(index)
+                    del cart[index]
                     print('O produto foi removido com sucesso do carrinho.')
                 except IndexError:
                     print('Houve um erro ao remover o produto do carrinho.')

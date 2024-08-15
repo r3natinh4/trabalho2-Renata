@@ -65,12 +65,12 @@ def pay_products() -> None:
         return
     
     total: float = .0
-    for product in cart:
+    for index, product in enumerate(cart):
         price: float = product['price']
         total += price
         
         history.append(product)
-        del product
+        del cart[index]  # "del product" não estava funcionando
     
     print('Compra feita com sucesso!\n' \
          f'Foi pago um total de R$ {total:.2f}')
