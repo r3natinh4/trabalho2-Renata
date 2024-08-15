@@ -1,6 +1,3 @@
-import os
-import json
-
 products: list[dict[str, str | float]] = [
     {
         'name'        : 'Maçã',
