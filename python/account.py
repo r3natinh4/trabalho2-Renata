@@ -2,7 +2,7 @@ from typing import Self
 import json
 
 class Account:
-    def __init__(self, name: str, phone_number: str, date_birth: str, cep: str, password: str) -> None:
+    def __init__(self, name, phone_number, date_birth, cep, password):
         self.name         = name.lower()
         self.phone_number = phone_number
         self.date_birth   = date_birth.lower()
@@ -10,10 +10,10 @@ class Account:
         self.password     = password
     
     @classmethod
-    def register(cls, name: str, phone_number: str, date_birth: str, cep: str, password: str) -> Self | None:
+    def register(cls, name, phone_number, date_birth, cep, password):
         with open('db/accounts.json', 'r') as file:
-            data: list[dict[str, str]] = json.load(file)
-            data_input: dict[str, str] = {
+            data = json.load(file)
+            data_input = {
                 'name'         : name.lower(),
                 'phone_number' : phone_number,
                 'date_birth'   : date_birth.lower(),
@@ -30,10 +30,10 @@ class Account:
             return cls(name, phone_number, date_birth, cep, password)
     
     @classmethod
-    def login(cls, name: str, phone_number: str, date_birth: str, cep: str, password: str) -> Self | None:
+    def login(cls, name, phone_number, date_birth, cep, password):
         with open('db/accounts.json', 'r') as file:
-            data: list[dict[str, str]] = json.load(file)
-            data_input: dict[str, str] = {
+            data = json.load(file)
+            data_input = {
                 'name'         : name.lower(),
                 'phone_number' : phone_number,
                 'date_birth'   : date_birth.lower(),

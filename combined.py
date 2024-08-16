@@ -1,9 +1,8 @@
 import os
 import sys
 import json
-from typing import Self
 
-products: list[dict[str, str | float]] = [
+products = [
     {
         'name'        : 'Maçã',
         'price'       : 1.99,
@@ -31,11 +30,11 @@ products: list[dict[str, str | float]] = [
     }
 ]
 
-cart: list[dict[str, str | float]] = []
-history: list[dict[str, str | float]] = []
+cart = []
+history = []
 
 class Account:
-    def __init__(self, name: str, phone_number: str, date_birth: str, cep: str, password: str) -> None:
+    def __init__(self, name, phone_number, date_birth, cep, password):
         self.name         = name.lower()
         self.phone_number = phone_number
         self.date_birth   = date_birth.lower()
@@ -43,10 +42,10 @@ class Account:
         self.password     = password
     
     @classmethod
-    def register(cls, name: str, phone_number: str, date_birth: str, cep: str, password: str) -> Self | None:
+    def register(cls, name, phone_number, date_birth, cep, password):
         with open('db/accounts.json', 'r') as file:
-            data: list[dict[str, str]] = json.load(file)
-            data_input: dict[str, str] = {
+            data = json.load(file)
+            data_input = {
                 'name'         : name.lower(),
                 'phone_number' : phone_number,
                 'date_birth'   : date_birth.lower(),
@@ -63,10 +62,10 @@ class Account:
             return cls(name, phone_number, date_birth, cep, password)
     
     @classmethod
-    def login(cls, name: str, phone_number: str, date_birth: str, cep: str, password: str) -> Self | None:
+    def login(cls, name, phone_number, date_birth, cep, password):
         with open('db/accounts.json', 'r') as file:
-            data: list[dict[str, str]] = json.load(file)
-            data_input: dict[str, str] = {
+            data = json.load(file)
+            data_input = {
                 'name'         : name.lower(),
                 'phone_number' : phone_number,
                 'date_birth'   : date_birth.lower(),
@@ -80,41 +79,41 @@ class Account:
         return cls(name, phone_number, date_birth, cep, password)
 
 
-def print_products() -> None:
+def print_products():
     for index, product in enumerate(products):
-        name: str        = product['name']
-        price: float     = product['price']
-        description: str = product['description']
+        name = product['name']
+        price = product['price']
+        description = product['description']
         
         print(f'[{index}] {name}: R$ {price:.2f} - {description}')
 
-def add_to_cart(index: int) -> None:
+def add_to_cart(index):
     cart.append(products[index])
 
-def show_cart() -> None:
+def show_cart():
     if len(cart) == 0:
         print('O carrinho está vazio.')
         return
     
-    total: float = .0
+    total = .0
     for index, product in enumerate(cart):
-        name: str        = product['name']
-        price: float     = product['price']
-        description: str = product['description']
+        name = product['name']
+        price = product['price']
+        description = product['description']
         total += price
         
         print(f'[{index}] {name}: R$ {price:.2f} - {description}')
     
     print(f'\nPreço Total: R$ {total:.2f}')
 
-def pay_products() -> None:
+def pay_products():
     if len(cart) == 0:
         print('Não há nenhum produto em seu carrinho para ser pago.')
         return
     
-    total: float = .0
+    total = .0
     for index, product in enumerate(cart):
-        price: float = product['price']
+        price = product['price']
         total += price
         
         history.append(product)
@@ -123,16 +122,16 @@ def pay_products() -> None:
     print('Compra feita com sucesso!\n' \
          f'Foi pago um total de R$ {total:.2f}')
 
-def view_history() -> None:
+def view_history():
     if len(history) == 0:
         print('Não foi feita nenhuma compra neste momento.')
         return
     
-    total: float = .0
+    total = .0
     for product in history:
-        name: str        = product['name']
-        price: float     = product['price']
-        description: str = product['description']
+        name = product['name']
+        price = product['price']
+        description = product['description']
         total += price
         
         print(f'{name}: R$ {price:.2f} - {description}')
@@ -155,7 +154,7 @@ def main():
                 '2. Registro\n' \
                 '3. Sair\n')
         
-        choice: str = input('O que você deseja fazer? ').strip()
+        choice = input('O que você deseja fazer? ').strip()
         if choice not in ['1', '2', '3']:
             print('Escolha inválida.')
             continue
@@ -165,19 +164,18 @@ def main():
             sys.exit()
         
         try:
-            name: str         = input('Digite seu nome: ').strip()
-            phone_number: str = input('Digite seu número de telefone: ').strip()
-            date_birth: str   = input('Digite sua data de nascimento: ').strip()
-            cep: str          = input('Digite seu CEP: ').strip()
-            password: str     = input('Digite sua senha: ').strip()
+            name = input('Digite seu nome: ').strip()
+            phone_number = input('Digite seu número de telefone: ').strip()
+            date_birth = input('Digite sua data de nascimento: ').strip()
+            cep = input('Digite seu CEP: ').strip()
+            password = input('Digite sua senha: ').strip()
         except AssertionError:
             continue
         
-        match choice:
-            case '1':
-                account: Account = Account.login(name, phone_number, date_birth, cep, password)
-            case '2':
-                account: Account = Account.register(name, phone_number, date_birth, cep, password)
+        if choice == '1':
+            account = Account.login(name, phone_number, date_birth, cep, password)
+        elif choice == '2':
+                account = Account.register(name, phone_number, date_birth, cep, password)
         
         if account is None:
             print('Alguma coisa deu errado, tente novamente.')
@@ -196,41 +194,40 @@ def main():
                 '6. Ver histórico de compras\n' \
                 '7. Sair\n')
         
-        choice: str = input('O que você deseja fazer? ').strip()
-        match choice:
-            case '1':
-                print('Catálogo de Frutas:\n')
-                print_products()
-            case '2':
-                try:
-                    index: int = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
-                    add_to_cart(index)
-                    print('O produto foi adicionado com sucesso ao carrinho.')
-                except IndexError:
-                    print('Houve um erro ao adicionar o produto ao carrinho. O produto existe?')
-                except ValueError:
-                    print('O código do produto não é um número inteiro.')
-            case '3':
-                try:
-                    index: int = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
-                    del cart[index]
-                    print('O produto foi removido com sucesso do carrinho.')
-                except IndexError:
-                    print('Houve um erro ao remover o produto do carrinho.')
-                except ValueError:
-                    print('O código do produto não é um número inteiro.')
-            case '4':
-                print('Seu Carrinho:\n')
-                show_cart()
-            case '5':
-                pay_products()
-            case '6':
-                view_history()
-            case '7':
-                print("\nAté logo!")
-                break
-            case _:
-                print("Opção inválida. Tente novamente!")
+        choice = input('O que você deseja fazer? ').strip()
+        if choice == '1':
+            print('Catálogo de Frutas:\n')
+            print_products()
+        elif choice == '2':
+            try:
+                index = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
+                add_to_cart(index)
+                print('O produto foi adicionado com sucesso ao carrinho.')
+            except IndexError:
+                print('Houve um erro ao adicionar o produto ao carrinho. O produto existe?')
+            except ValueError:
+                print('O código do produto não é um número inteiro.')
+        elif choice == '3':
+            try:
+                index = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
+                del cart[index]
+                print('O produto foi removido com sucesso do carrinho.')
+            except IndexError:
+                print('Houve um erro ao remover o produto do carrinho.')
+            except ValueError:
+                print('O código do produto não é um número inteiro.')
+        elif choice == '4':
+            print('Seu Carrinho:\n')
+            show_cart()
+        elif choice == '5':
+            pay_products()
+        elif choice == '6':
+            view_history()
+        elif choice == '7':
+            print("\nAté logo!")
+            break
+        else:
+            print("Opção inválida. Tente novamente!")
 
 if __name__ == '__main__':
     main()

@@ -1,4 +1,4 @@
-products: list[dict[str, str | float]] = [
+products = [
     {
         'name'        : 'Maçã',
         'price'       : 1.99,
@@ -26,47 +26,47 @@ products: list[dict[str, str | float]] = [
     }
 ]
 
-cart: list[dict[str, str | float]] = []
-history: list[dict[str, str | float]] = []
+cart = []
+history = []
 
-def print_products() -> None:
+def print_products():
     for index, product in enumerate(products):
-        name: str        = product['name']
-        price: float     = product['price']
-        description: str = product['description']
+        name = product['name']
+        price = product['price']
+        description = product['description']
         
         print(f'[{index}] {name}: R$ {price:.2f} - {description}')
 
-def add_to_cart(index: int) -> None:
+def add_to_cart(index):
     cart.append(products[index])
 
-def remove_from_cart(index: int) -> None:
+def remove_from_cart(index):
     del cart[index]
 
-def show_cart() -> None:
+def show_cart():
     if len(cart) == 0:
         print('O carrinho está vazio.')
         return
     
-    total: float = .0
+    total = .0
     for index, product in enumerate(cart):
-        name: str        = product['name']
-        price: float     = product['price']
-        description: str = product['description']
+        name = product['name']
+        price = product['price']
+        description = product['description']
         total += price
         
         print(f'[{index}] {name}: R$ {price:.2f} - {description}')
     
     print(f'\nPreço Total: R$ {total:.2f}')
 
-def pay_products() -> None:
+def pay_products():
     if len(cart) == 0:
         print('Não há nenhum produto em seu carrinho para ser pago.')
         return
     
-    total: float = .0
+    total = .0
     for index, product in enumerate(cart):
-        price: float = product['price']
+        price = product['price']
         total += price
         
         history.append(product)
@@ -75,16 +75,16 @@ def pay_products() -> None:
     print('Compra feita com sucesso!\n' \
          f'Foi pago um total de R$ {total:.2f}')
 
-def view_history() -> None:
+def view_history():
     if len(history) == 0:
         print('Não foi feita nenhuma compra neste momento.')
         return
     
-    total: float = .0
+    total = .0
     for product in history:
-        name: str        = product['name']
-        price: float     = product['price']
-        description: str = product['description']
+        name = product['name']
+        price = product['price']
+        description = product['description']
         total += price
         
         print(f'{name}: R$ {price:.2f} - {description}')
