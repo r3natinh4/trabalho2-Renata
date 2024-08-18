@@ -1,3 +1,5 @@
+PURCHASES_DB = './db/purchases.txt'
+
 products = [
     {
         'name'        : 'Maçã',
@@ -6,7 +8,7 @@ products = [
     },
     {
         'name'        : 'Manga',
-        'price'       : 5.5,
+        'price'       : 5.50,
         'description' : 'Rosa/espada'
     },
     {
@@ -21,12 +23,12 @@ products = [
     },
     {
         'name'        : 'Uva',
-        'price'       : 2.9,
+        'price'       : 2.90,
         'description' : 'Tompson/niagara'
     }
 ]
 
-cart = []
+cart    = []
 history = []
 
 def print_products():
@@ -37,11 +39,12 @@ def print_products():
         
         print(f'[{index}] {name}: R$ {price:.2f} - {description}')
 
-def add_to_cart(index):
-    cart.append(products[index])
+def add_to_cart(index, quantity):
+    for i in range(quantity):
+        cart.append(products[index])
 
 def remove_from_cart(index):
-    del cart[index]
+    del cart[str(index)]
 
 def show_cart():
     if len(cart) == 0:

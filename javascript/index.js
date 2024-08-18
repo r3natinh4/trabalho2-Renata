@@ -95,7 +95,7 @@ async function main() {
             
             case "3":
                 try {
-                    let input = await validInput("Qual produto você deseja adicionar ao carrinho? ");
+                    let input = await validInput("Qual produto você deseja remover do carrinho? ");
                     let index = parseInt(input);
                     catalog.removeFromCart(index);
                     console.log("O produto foi removido com sucesso do carrinho.");
