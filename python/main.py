@@ -1,24 +1,27 @@
 import os
 import sys
-from account import Account, ACCOUNTS_DB
-import catalog
+from account import ACCOUNTS_DB, Account
+from catalog import PURCHASES_DB, print_products, add_to_cart, remove_from_cart, show_cart, pay_products, view_purchases
 
 DIRECTORY_DB = './db/'
 
 def main():
-    # Cria o arquivo caso ele não exista
-    if not os.path.exists(ACCOUNTS_DB):
-        os.makedirs(DIRECTORY_DB, exist_ok=True)
-        
-        with open(ACCOUNTS_DB, 'w') as file:
-            file.write('')
+    # Cria os arquivos caso eles não existam
+    for db_path in (ACCOUNTS_DB, PURCHASES_DB):
+        if not os.path.exists(db_path):
+            os.makedirs(DIRECTORY_DB, exist_ok=True)
+            
+            with open(db_path, 'w') as file:
+                file.write('')
+    
     
     print('Menu de Opções:')
     
     while True:
-        print('\n1. Login\n'
-                '2. Registro\n'
-                '3. Sair\n')
+        print(
+            '\n1. Login\n'
+            '2. Registro\n'
+            '3. Sair\n')
         
         choice = input('O que você deseja fazer? ').strip()
         
@@ -34,6 +37,10 @@ def main():
             cep          = input('Digite seu CEP: ').strip()
             password     = input('Digite sua senha: ').strip()
             
+            if '' in (name, phone_number, date_birth, cep, password):
+                print('Você esqueceu de preencher um ou mais campos. Tente novamente!')
+                continue
+            
             account = Account.register(name, phone_number, date_birth, cep, password)
         elif choice == '3':
             print('Até logo!')
@@ -44,37 +51,45 @@ def main():
         
         
         if account is None:
-            print('Alguma coisa deu errado, tente novamente. Você preencheu algum campo incorretamente?')
+            print(
+                'Alguma coisa deu errado, tente novamente.\n'
+                
+                '\n    Coisas que podem ter acontecido:\n'
+                'No login, você preencheu as credenciais incorretamente ou a conta não existe.\n'
+                'No registro, já existe uma conta com o mesmo nome e senha.')
+            
             continue
         
         break
     
-    print(f'Olá, {account.name}!\n'
-          )
+    
+    print(f'Olá, {account.name}!')
     
     while True:
-        print('\n1. Exibir Catálogo\n'          
-                '2. Adicionar ao carrinho\n'
-                '3. Remover do carrinho\n'
-                '4. Mostrar carrinho\n'
-                '5. Pagar produtos\n'
-                '6. Ver histórico de compras\n'
-                '7. Sair\n')
+        print(
+            '\n1. Exibir Catálogo\n'          
+            '2. Adicionar ao carrinho\n'
+            '3. Remover do carrinho\n'
+            '4. Mostrar carrinho\n'
+            '5. Pagar produtos\n'
+            '6. Ver histórico de compras\n'
+            '7. Sair\n')
         
         choice = input('O que você deseja fazer? ').strip()
         if choice == '1':
             print('Catálogo de Frutas:\n')
-            catalog.print_products()
+            print_products()
         
         elif choice == '2':
             try:
                 index = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
                 quantity = int(input('Quantos do mesmo produto você deseja adicionar? ').strip())
                 
-                if quantity == '':
-                    quantity = 1
+                if quantity < 1:
+                    print('Você não pode adicionar menos que 1 produto no carrinho.')
+                    continue
                 
-                catalog.add_to_cart(index, quantity)
+                add_to_cart(index, quantity)
                 
                 print('O produto foi adicionado com sucesso ao carrinho.')
             except IndexError:
@@ -87,26 +102,27 @@ def main():
                 index = int(input('Qual produto você deseja remover do carrinho? ').strip())
                 quantity = int(input('Quantos do mesmo produto você deseja remover? ').strip())
                 
-                if quantity == '':
-                    quantity = 1
+                if quantity < 1:
+                    print('Você não pode remover menos que 1 produto no carrinho.')
+                    continue
                 
-                catalog.remove_from_cart(index, quantity)
+                remove_from_cart(index, quantity)
                 
                 print('O produto foi removido com sucesso do carrinho.')
             except IndexError:
-                print('Houve um erro ao remover o produto do carrinho.')
+                print('Houve um erro ao remover o produto do carrinho. O produto não está no carrinho?')
             except ValueError:
                 print('O código do produto ou a quantidade não é um número.')
         
         elif choice == '4':
             print('Seu Carrinho:\n')
-            catalog.show_cart()
+            show_cart()
         
         elif choice == '5':
-            catalog.pay_products()
+            pay_products(account.id)
         
         elif choice == '6':
-            catalog.view_history()
+            view_purchases(account.id)
         
         elif choice == '7':
             print("\nAté logo!")

@@ -1,79 +1,54 @@
 import re
 from random import randint
+from parser import parse_txt
 
 ACCOUNTS_DB  = './db/accounts.txt'
 
 
-def _get_accounts():
-    accounts = {}
-    last_id  = '-1'
-    
-    with open(ACCOUNTS_DB, 'r') as file:
-        content = [item.strip() for item in file.readlines() if item.strip() != '']
-    
-    for line in content:
-        match = re.match(r'([a-zA-Z0-9]+)(?:\s+)?(?::)(?:\s+)?(.+)', line)
-        
-        if match is None:
-            continue
-        
-        key_name  = match.group(1)
-        key_value = match.group(2)
-        
-        if key_name == 'id':
-            last_id = key_value
-            accounts[key_value] = {}
-        else:
-            accounts[last_id][key_name] = key_value
-    
-    return accounts
-
 def _get_random_id(limit=999_999_999_999):
-    accounts = _get_accounts()
+    accounts = parse_txt(ACCOUNTS_DB)
+    used_ids = []
     generated_id = None
-    loop = True
     
-    while loop:
+    for account_id in accounts:
+        used_ids.append(account_id)
+    
+    while True:
         generated_id = str(randint(1, limit))
         
-        for account_id in accounts:
-            account = accounts[account_id]
-            
-            if generated_id != account['id']:
-                loop = False
+        if generated_id not in used_ids:
+            break
     
     return generated_id
 
 def get_account(name, password):
-    accounts = _get_accounts()
+    accounts = parse_txt(ACCOUNTS_DB)
     
     for account_id in accounts:
         account = accounts[account_id]
         
         if account['name'].lower() == name.lower() and account['password'] == password:
-            return account_id
+            return account_id, account
     
-    return None
+    return None, None
 
-def add_account(name, date_birth, cep, email, password):
+def add_account(name, phone_number, date_birth, cep, password):
+    if get_account(name, password) != (None, None):
+        return None
+    
     generated_id = _get_random_id()
     
     with open(ACCOUNTS_DB, 'a') as file:
         file.write(
-            f'id         : {generated_id}\n'
-            f'name       : {name}\n'
-            f'date_birth : {date_birth}\n'
-            f'cep        : {cep}\n'
-            f'email      : {email}\n'
-            f'password   : {password}\n'
+            f'id           : {generated_id}\n'
+            f'name         : {name}\n'
+            f'phone_number : {phone_number}\n'
+            f'date_birth   : {date_birth}\n'
+            f'cep          : {cep}\n'
+            f'password     : {password}\n'
         )
     
-    return generated_id, {
-        'name'       : name,
-        'date_birth' : date_birth,
-        'cep'        : cep,
-        'email'      : email
-    }
+    return generated_id
 
 
 class Account:
@@ -102,4 +77,8 @@ class Account:
     @classmethod
     def register(cls, name, phone_number, date_birth, cep, password):
         account_id = add_account(name, phone_number, date_birth, cep, password)
+        
+        if account_id is None:
+            return None
+        
         return cls(account_id, name, phone_number, date_birth, cep)
