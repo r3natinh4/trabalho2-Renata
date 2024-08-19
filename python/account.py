@@ -1,8 +1,7 @@
-import re
 from random import randint
 from parser import parse_txt
 
-ACCOUNTS_DB  = './db/accounts.txt'
+ACCOUNTS_DB = './db/accounts.txt'
 
 
 def _get_random_id(limit=999_999_999_999):
@@ -67,12 +66,12 @@ class Account:
         if account is None:
             return None
         
-        name         = account['name']
+        _name        = account['name']
         phone_number = account['phone_number']
         date_birth   = account['date_birth']
         cep          = account['cep']
         
-        return cls(account_id, name, phone_number, date_birth, cep)
+        return cls(account_id, _name, phone_number, date_birth, cep)
     
     @classmethod
     def register(cls, name, phone_number, date_birth, cep, password):

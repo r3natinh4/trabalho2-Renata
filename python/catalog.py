@@ -31,8 +31,7 @@ products = {
     }
 }
 
-cart      = {}
-purchases = {}
+cart = {}
 
 
 def _custom_price(price, dot=',', money='R$'):
@@ -44,8 +43,8 @@ def print_products():
     for product_id in products:
         product = products[product_id]
         
-        name = product['name']
-        price = product['price']
+        name        = product['name']
+        price       = product['price']
         description = product['description']
         
         print(f'[{product_id}] {name}: {_custom_price(price)} - {description}')
@@ -54,16 +53,16 @@ def add_to_cart(index, quantity):
     product_id = str(index)
     
     if cart.get(product_id) is None:
-        cart[product_id] = { 'quantity': 0 }
+        cart[product_id] = 0
     
-    cart[product_id]['quantity'] += quantity
+    cart[product_id] += quantity
 
 def remove_from_cart(index, quantity):
     product_id = str(index)
     
-    cart[product_id]['quantity'] -= quantity
+    cart[product_id] -= quantity
     
-    if cart[product_id]['quantity'] < 1:
+    if cart[product_id] < 1:
         del cart[product_id]
 
 def show_cart():
@@ -75,7 +74,7 @@ def show_cart():
     for product_id in cart:
         product = products[product_id]
         
-        quantity    = cart[product_id]['quantity']
+        quantity    = cart[product_id]
         name        = product['name']
         price       = product['price'] * quantity
         description = product['description']
@@ -90,63 +89,54 @@ def pay_products(account_id):
         print('Não há nenhum produto em seu carrinho para ser pago.')
         return
     
-    purchases_data = parse_txt(PURCHASES_DB)
-    if purchases_data.get(account_id) is None:
-        purchases_data[account_id] = {}
-    
-    personal_data  = purchases_data[account_id]
-    del purchases_data[account_id]
+    purchases = parse_txt(PURCHASES_DB)
+    purchases[account_id] = purchases.get(account_id, {})
     
     total = .0
-    for product_id in cart:
-        product  = products[product_id]
-        cproduct = cart[product_id]
+    for product_id in list(cart):
+        if purchases[account_id].get(product_id) is None:
+            purchases[account_id][product_id] = 0
+        else:
+            purchases[account_id][product_id] = int(purchases[account_id][product_id])
         
-        quantity = cproduct['quantity']
-        price    = product['price'] * quantity
-        total   += price
+        purchases[account_id][product_id] += int(cart[product_id])
         
-        if purchases.get(product_id) is None:
-            purchases[product_id] = { 'quantity': 0 }
+        total += products[product_id]['price'] * purchases[account_id][product_id]
         
-        purchases[product_id]['quantity'] += quantity
+        del cart[product_id]
+    
     
     os.remove(PURCHASES_DB)
+    
     with open(PURCHASES_DB, 'a') as file:
-        file.write(f'id : {account_id}\n')
-        for purchase_id in list(purchases_data):
-            quantity = purchases.get(purchase_id, { 'quantity': 0 })['quantity'] \
-                     + int(personal_data.get(purchase_id, 0))
+        for user_id in purchases:
+            file.write(f'id : {user_id}\n')
             
-            file.write(f'{purchase_id} : {quantity}\n')
-            
-            del cart[product_id]
-            del purchases[purchase_id]
-        
-        for data in purchases_data:
-            file.write(f'{data} : {purchases_data[data]}\n')
+            for product_id in purchases[user_id]:
+                quantity = purchases[user_id][product_id]
+                file.write(f'{product_id} : {quantity}\n')
+    
     
     print(
         'Compra feita com sucesso!\n'
        f'Foi pago um total de {_custom_price(total)}')
 
 def view_purchases(account_id):
-    purchases_data = parse_txt(PURCHASES_DB)
-    personal_data  = purchases_data.get(account_id, {})
+    purchases = parse_txt(PURCHASES_DB)
+    personal  = purchases.get(account_id, {})
     
-    if len(personal_data) == 0:
+    if len(personal) == 0:
         print('Não foi feita nenhuma compra nesta conta.')
         return
     
     total = .0
-    for product_id in personal_data:
-        product  = personal_data[product_id]
-        pproduct = products[product_id]
+    for product_id in personal:
+        product  = products[product_id]
+        quantity = int(personal[product_id])
         
-        quantity    = product['quantity']
-        name        = pproduct['name']
-        price       = pproduct['price'] * quantity
-        description = pproduct['description']
+        name        = product['name']
+        price       = product['price'] * quantity
+        description = product['description']
         
         total += price
         print(f'[{product_id}] {name} ({quantity}): {_custom_price(price)} - {description}')

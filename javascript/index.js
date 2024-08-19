@@ -1,34 +1,34 @@
 const fs = require("fs");
-const catalog = require("./catalog");
-const Account = require("./account");
-const { validInput } = require("./handler");
+const { ACCOUNTS_DB, Account } = require("./account.js");
+const { PURCHASES_DB, printProducts, addToCart, removeFromCart, showCart, payProducts, viewPurchases } = require("./catalog.js");
+const { validInput } = require("./handler.js");
 
-var account;
+const DIRECTORY_DB = "./db/";
 
 async function main() {
-    if (!fs.existsSync("./db/accounts.json")) {
-        fs.mkdirSync("./db/", { recursive: true });
-        fs.writeFileSync("./db/accounts.json", "[]");
+    let account;
+    let choice;
+    
+    if (!fs.existsSync(DIRECTORY_DB)) {
+        fs.mkdirSync(DIRECTORY_DB, { recursive: true });
     }
+    
+    [ACCOUNTS_DB, PURCHASES_DB].forEach((dbPath) => {
+        if (!fs.existsSync(dbPath)) {
+            fs.writeFileSync(dbPath, "");
+        }
+    });
     
     let loop = true;
     console.log("Menu de Opções:");
     
     while (loop) {
-        console.log("\n1. Login\n"  +
-                    "2. Registro\n" +
-                    "3. Sair\n");
+        console.log(
+            "\n1. Login\n"  +
+            "2. Registro\n" +
+            "3. Sair\n");
         
-        let choice = await validInput("O que você deseja fazer? ");
-        if (!["1", "2", "3"].includes(choice)) {
-            console.log("Escolha inválida.");
-            continue;
-        }
-        
-        if (choice === "3") {
-            console.log("Até logo!");
-            process.exit();
-        }
+        choice = await validInput("O que você deseja fazer? ");
         
         let name;
         let phoneNumber;
@@ -36,27 +36,41 @@ async function main() {
         let cep;
         let password;
         
-        try {
-            name        = await validInput("Digite seu nome: ");
-            phoneNumber = await validInput("Digite seu número de telefone: ");
-            dateBirth   = await validInput("Digite sua data de nascimento: ");
-            cep         = await validInput("Digite seu CEP: ");
-            password    = await validInput("Digite sua senha: ");
-        } catch (e) {
-            continue;
-        }
-        
         switch (choice) {
             case "1":
-                account = Account.login(name, phoneNumber, dateBirth, cep, password);
+                name     = await validInput("Digite seu nome: ");
+                password = await validInput("Digite sua senha: ");
+                
+                account = Account.login(name, password);
                 break;
             case "2":
+                name        = await validInput("Digite seu nome: ");
+                phoneNumber = await validInput("Digite seu número de telefone: ");
+                dateBirth   = await validInput("Digite sua data de nascimento: ");
+                cep         = await validInput("Digite seu CEP: ");
+                password    = await validInput("Digite sua senha: ");
+                
+                if ("" in []) {
+                    console.log("Você esqueceu de preencher um ou mais campos. Tente novamente!");
+                    continue;
+                }
+                
                 account = Account.register(name, phoneNumber, dateBirth, cep, password);
                 break;
+            case "3":
+                console.log("Até logo!");
+                process.exit();
         }
         
+        
         if (account === null) {
-            console.log("Alguma coisa deu errado, tente novamente.");
+            console.log(
+                "Alguma coisa deu errado, tente novamente.\n" +
+                
+                "\n    Coisas que podem ter acontecido:\n" +
+                "No login, você preencheu as credenciais incorretamente ou a conta não existe.\n" +
+                "No registro, já existe uma conta com o mesmo nome e senha.");
+            
             continue;
         }
         
@@ -67,26 +81,38 @@ async function main() {
     console.log(`Olá, ${account.name}!`);
     
     while (loop) {
-        console.log("\n1. Exibir Catálogo\n"          +
-                      "2. Adicionar ao carrinho\n"    +
-                      "3. Remover do carrinho\n"      +
-                      "4. Mostrar carrinho\n"         +
-                      "5. Pagar produtos\n"           +
-                      "6. Ver histórico de compras\n" +
-                      "7. Sair\n");
+        console.log(
+            "\n1. Exibir Catálogo\n"        +
+            "2. Adicionar ao carrinho\n"    +
+            "3. Remover do carrinho\n"      +
+            "4. Mostrar carrinho\n"         +
+            "5. Pagar produtos\n"           +
+            "6. Ver histórico de compras\n" +
+            "7. Sair\n");
         
-        let choice = await validInput("O que você deseja fazer? ");
+        choice = await validInput("O que você deseja fazer? ");
+        
+        let index;
+        let quantity;
+        
         switch (choice) {
             case "1":
                 console.log("Catálogo de Frutas:\n");
-                catalog.printProducts();
+                printProducts();
                 break;
             
             case "2":
                 try {
-                    let input = await validInput("Qual produto você deseja adicionar ao carrinho? ");
-                    let index = parseInt(input);
-                    catalog.addToCart(index);
+                    index    = parseInt(await validInput("Qual produto você deseja adicionar ao carrinho? "));
+                    quantity = parseInt(await validInput("Quantos do mesmo produto você deseja adicionar? "));
+                    
+                    if (quantity < 1) {
+                        console.log("Você não pode adicionar menos que 1 produto no carrinho.");
+                        continue;
+                    }
+                    
+                    addToCart(index, quantity);
+                    
                     console.log("O produto foi adicionado com sucesso ao carrinho.");
                 } catch (e) {
                     console.log("Houve um erro ao adicionar o produto ao carrinho. O produto existe?");
@@ -95,9 +121,16 @@ async function main() {
             
             case "3":
                 try {
-                    let input = await validInput("Qual produto você deseja remover do carrinho? ");
-                    let index = parseInt(input);
-                    catalog.removeFromCart(index);
+                    index    = parseInt(await validInput("Qual produto você deseja remover do carrinho? "));
+                    quantity = parseInt(await validInput("Quantos do mesmo produto você deseja remover? "));
+                    
+                    if (quantity < 1) {
+                        console.log("Você não pode remover menos que 1 produto no carrinho.");
+                        continue;
+                    }
+                    
+                    removeFromCart(index, quantity);
+                    
                     console.log("O produto foi removido com sucesso do carrinho.");
                 } catch (e) {
                     console.log("Houve um erro ao remover o produto do carrinho.");
@@ -106,15 +139,15 @@ async function main() {
             
             case "4":
                 console.log("Seu Carrinho:\n");
-                catalog.showCart();
+                showCart();
                 break;
             
             case "5":
-                catalog.payProducts();
+                payProducts(account.id);
                 break;
             
             case "6":
-                catalog.viewHistory();
+                viewPurchases(account.id);
                 break;
             
             case "7":

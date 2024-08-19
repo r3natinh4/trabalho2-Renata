@@ -82,7 +82,7 @@ def main():
         
         elif choice == '2':
             try:
-                index = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
+                index    = int(input('Qual produto você deseja adicionar ao carrinho? ').strip())
                 quantity = int(input('Quantos do mesmo produto você deseja adicionar? ').strip())
                 
                 if quantity < 1:
@@ -99,7 +99,7 @@ def main():
         
         elif choice == '3':
             try:
-                index = int(input('Qual produto você deseja remover do carrinho? ').strip())
+                index    = int(input('Qual produto você deseja remover do carrinho? ').strip())
                 quantity = int(input('Quantos do mesmo produto você deseja remover? ').strip())
                 
                 if quantity < 1:
